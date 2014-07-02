@@ -1,0 +1,51 @@
+REQUIREMENTS
+
+(Sun/Open) Grid Engine is needed on every node and Wake On LAN too...
+If some jobs are launch from another way, forget this tool.
+Notice that if Wake on Lan is not detected by the master on some nodes,
+it won't try to halt or boot these nodes...
+
+INSTALL
+
+1/ Download the scripts greenginecode.sh, boot_node.sh, cleanhalt.sh,
+the service greenginecode and the greenginecode.conf file here :
+http://kimura.univ-montp2.fr/calcul_isem/isem-softwares/tools/
+
+2/ Move greenginecode.sh, boot_node.sh and cleanhalt.sh to your /sbin
+directory (or do symlinks).
+
+3/ Transform all these scripts to be executable for root (chmod +x *.sh)
+
+4/ Move the service file greenginecode to /etc/init.d/
+
+5/ Move the configuration file greenginecode.conf in your /etc/ directory.
+
+That's all !!
+
+
+USAGE / CONFIGURATION
+
+Configure greenginecode to suit to your own cluster with
+/etc/greenginecode.conf file.
+
+
+To use the service :
+
+service greenginecode start
+service greenginecode status
+service greenginecode stop
+service greenginecode restart
+
+
+All the things are logged into /var/log/greenginecode.
+
+queue.log is the general log for actions
+service.log is a log file for the service.
+
+Check these two files to solve problems if needed.
+
+Some files to work onto queues (and WoL) are stored into
+/var/lib/greenginecode directory
+
+
+

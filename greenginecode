@@ -1,0 +1,75 @@
+#!/bin/bash
+
+#   This file is part of Greenginecode.
+#   Copyright (c) 2012, Remy Dernat, CNRS
+#   Greenginecode is free software. This software is governed
+#   by the CeCILL license under French law and abiding
+#   by the rules of distribution of free software.
+#   As a counterpart to the access to the source code
+#   and  rights to copy,modify and redistribute granted
+#   by the license, users are provided only with a
+#   limited warranty and the software's author, the
+#   holder of the economic rights, and the successive
+#   licensors  have only  limited liability.See the
+#   files license-en.txt or license-fr.txt for more
+#   details.
+
+
+# description: Green Code server
+# SGE queue listener
+# Get function from functions library
+. /etc/init.d/functions
+
+. /etc/greenginecode.conf
+
+source $BINARIES
+
+if [ ! -d $logdirectory ];then
+    mkdir $logdirectory
+fi;
+
+if [ ! -d $directory ];then
+    mkdir $directory
+fi;
+
+rm -f $directory/*-avail-lvl.txt > /dev/null
+
+LOGFILE="$logdirectory/service.log"
+
+# Start the greenginecode service
+start() {
+        initlog -c "echo -n Starting greenginecode server: "
+        /sbin/greenginecode.sh >> $LOGFILE 2>&1 &
+        ### Creating the lock file ###
+        touch /var/lock/subsys/greenginecode
+        success $"greenginecode server startup"
+        echo
+}
+# Restart the service greenginecode
+stop() {
+        initlog -c "echo -n Stopping greenginecode server: "
+        killproc greenginecode.sh
+        ### Now, delete the lock file ###
+        rm -f /var/lock/subsys/greenginecode
+        echo
+}
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status greenginecode
+        ;;
+  restart|reload)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0
